@@ -1,0 +1,4 @@
+outs:
+- md5: 1112061c72a28dce85b30ad8edafb4c1
+  size: 47100510
+  path: mnist-train.npz
