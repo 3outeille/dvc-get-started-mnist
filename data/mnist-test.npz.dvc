@@ -1,4 +1,0 @@
-outs:
-- md5: cc4772ca2c8581d5878172e88b2a40d3
-  size: 7850510
-  path: mnist-test.npz
