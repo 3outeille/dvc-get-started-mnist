@@ -1,0 +1,15 @@
+stages:
+  prepare:
+    cmd: python3 src/prepare.py
+    deps:
+    - data/raw/
+    - src/prepare.py
+    outs:
+    - data/prepared
+  preprocess:
+    cmd: python3 src/preprocess.py
+    deps:
+    - data/prepared/
+    - src/preprocess.py
+    outs:
+    - data/preprocessed/

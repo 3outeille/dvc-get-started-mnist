@@ -1,0 +1,10 @@
+prepare:
+  seed: 20210428
+  remix: True
+  remix_split: 0.20
+
+preprocess:
+  seed: 20210428
+  normalize: True
+  shuffle: False
+
