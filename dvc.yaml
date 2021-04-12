@@ -4,6 +4,10 @@ stages:
     deps:
     - data/raw/
     - src/prepare.py
+    params:
+    - prepare.seed
+    - prepare.remix
+    - prepare.remix_split
     outs:
     - data/prepared
   preprocess:
@@ -11,5 +15,37 @@ stages:
     deps:
     - data/prepared/
     - src/preprocess.py
+    params:
+    - preprocess.seed
+    - preprocess.normalize
+    - preprocess.shuffle
+    - preprocess.add_noise
+    - preprocess.noise_amount
+    - preprocess.noise_s_vs_p
     outs:
     - data/preprocessed/
+  train:
+    cmd: python3 src/train.py
+    deps: 
+    - src/train.py
+    - src/model.py
+    - data/prepared/
+    params:
+    - train.seed
+    - train.validation_split
+    - train.model
+    - train.optimizer
+    - train.loss
+    - train.epochs
+    - train.batch_size
+    outs:
+    - models/model.h5
+
+  evaluate:
+    cmd: python3 src/evaluate.py
+    deps: 
+    - src/evaluate.py
+    - src/model.py
+    - models/model.h5
+
+

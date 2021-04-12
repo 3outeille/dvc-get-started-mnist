@@ -7,4 +7,26 @@ preprocess:
   seed: 20210428
   normalize: True
   shuffle: False
+  add_noise: False
+  noise_amount: 0.0004
+  noise_s_vs_p: 0.5
+
+train:
+  seed: 20210428
+  validation_split: 0.2
+  model: "mlp"
+  optimizer: "Adam"
+  loss: "SparseCategoricalCrossentropy" 
+  epochs: 10
+  batch_size: 128
+
+model_mlp:
+  units: 128
+  activation: "relu"
+
+model_cnn:
+  dense_units: 128
+  conv_kernel_size: 3
+  conv_units: 32
+  dropout: 0.5
 
