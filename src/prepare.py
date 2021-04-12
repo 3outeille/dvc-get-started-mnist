@@ -2,6 +2,11 @@ import struct
 import numpy as np
 import gzip
 import os
+import yaml
+
+
+def load_params():
+    return yaml.safe_load(open("params.yaml"))["prepare"]
 
 def mnist_images_idx_to_array(images_filename):
     images_f = gzip.open(images_filename, mode="rb")
@@ -33,19 +38,60 @@ def mnist_labels_idx_to_array(labels_filename):
     labels_array = np.asarray(labels_data, dtype='uint8')
     return labels_array
 
+def remix(images1, images2, labels1, labels2, seed, split):
+    images = np.vstack((images1, images2))
+    labels = np.hstack((labels1, labels2))
+
+    assert(images.shape[0] == labels.shape[0])
+
+    np.random.seed(seed)
+    np.random.shuffle(images)
+    np.random.seed(seed)
+    np.random.shuffle(labels)
+
+    split_index = int(images.shape[0] * (1 - split))
+
+    images1 = images[:split_index]
+    labels1 = labels[:split_index]
+    images2 = images[split_index:]
+    labels2 = labels[split_index:]
+
+    return (images1, images2, labels1, labels2)
+
 
 def main():
-    training_images = mnist_images_idx_to_array("data/train-images-idx3-ubyte.gz")
-    print(f"Read training data: {training_images}")
-    training_labels = mnist_labels_idx_to_array("data/train-labels-idx1-ubyte.gz")
-    print(f"Read training labels: {training_labels}")
-    testing_images = mnist_images_idx_to_array("data/t10k-images-idx3-ubyte.gz")
-    print(f"Read testing data: {testing_images}")
-    testing_labels = mnist_labels_idx_to_array("data/t10k-labels-idx1-ubyte.gz")
-    print(f"Read testing labels: {testing_labels}")
+    params = load_params()
+    print(params)
 
-    np.savez("data/mnist-train.npz", images=training_images, labels=training_labels)
-    np.savez("data/mnist-test.npz", images=testing_images, labels=testing_labels)
+    training_images = mnist_images_idx_to_array("data/raw/train-images-idx3-ubyte.gz")
+    # print(f"Read training data: {training_images}")
+    training_labels = mnist_labels_idx_to_array("data/raw/train-labels-idx1-ubyte.gz")
+    # print(f"Read training labels: {training_labels}")
+    testing_images = mnist_images_idx_to_array("data/raw/t10k-images-idx3-ubyte.gz")
+    # print(f"Read testing data: {testing_images}")
+    testing_labels = mnist_labels_idx_to_array("data/raw/t10k-labels-idx1-ubyte.gz")
+    # print(f"Read testing labels: {testing_labels}")
+
+    if params["remix"]:
+        training_images, testing_images, training_labels, testing_labels = remix(images1=training_images,
+                                                                                 images2=testing_images,
+                                                                                 labels1=training_labels,
+                                                                                 labels2=testing_labels,
+                                                                                 seed=params["seed"],
+                                                                                 split=params["remix_split"])
+
+        assert training_images.shape[0] + testing_images.shape[0] == 70000
+        assert training_labels.shape[0] + testing_labels.shape[0] == 70000
+
+    print(f"Training Dataset Shape: {training_images.shape}")
+    print(f"Testing Dataset Shape: {testing_images.shape}")
+    print(f"Training Labels: {training_labels}")
+    print(f"Testing Labels: {testing_labels}")
+
+    os.makedirs("data/prepared")
+
+    np.savez("data/prepared/mnist-train.npz", images=training_images, labels=training_labels)
+    np.savez("data/prepared/mnist-test.npz", images=testing_images, labels=testing_labels)
 
 
 if __name__ == "__main__":
