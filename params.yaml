@@ -14,19 +14,18 @@ preprocess:
 train:
   seed: 20210428
   validation_split: 0.2
-  model: "mlp"
-  optimizer: "Adam"
-  loss: "SparseCategoricalCrossentropy" 
   epochs: 10
   batch_size: 128
 
-model_mlp:
-  units: 128
-  activation: "relu"
-
-model_cnn:
-  dense_units: 128
-  conv_kernel_size: 3
-  conv_units: 32
-  dropout: 0.5
-
+model:
+  name: "mlp"
+  optimizer: "Adam"
+  loss: "SparseCategoricalCrossentropy"
+  mlp:
+    units: 128
+    activation: "relu"
+  cnn:
+    dense_units: 128
+    conv_kernel_size: 3
+    conv_units: 32
+    dropout: 0.5

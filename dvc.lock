@@ -10,6 +10,11 @@ stages:
     - path: src/prepare.py
       md5: 21e57d729047c4e7a38871e98d011590
       size: 3834
+    params:
+      params.yaml:
+        prepare.remix: true
+        prepare.remix_split: 0.2
+        prepare.seed: 20210428
     outs:
     - path: data/prepared
       md5: 61c41f920b1ecba705776ecbd951aaf8.dir
@@ -23,10 +28,18 @@ stages:
       size: 54951020
       nfiles: 2
     - path: src/preprocess.py
-      md5: 5e2b67aaeea733b8e97883f8ffa09bb4
-      size: 2066
+      md5: 44cdedd76eb9600672a66bb18eceac07
+      size: 2338
+    params:
+      params.yaml:
+        preprocess.add_noise: false
+        preprocess.noise_amount: 0.0004
+        preprocess.noise_s_vs_p: 0.5
+        preprocess.normalize: true
+        preprocess.seed: 20210428
+        preprocess.shuffle: false
     outs:
     - path: data/preprocessed/
-      md5: e86bfe13514cb03fbd6995e51a1fca5a.dir
-      size: 702535020
+      md5: 2be3a347d848924b9bf70c7ff91c2317.dir
+      size: 705265020
       nfiles: 2

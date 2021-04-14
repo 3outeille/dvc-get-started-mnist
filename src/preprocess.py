@@ -1,3 +1,4 @@
+import tensorflow as tf
 import numpy as np
 import yaml
 import os
@@ -6,10 +7,8 @@ import os
 def normalize(images_array):
     return images_array / 255
 
-def add_noise(images):
+def add_noise(images, s_vs_p=0.5, amount=0.0004):
     n_images, n_row, n_col = images.shape
-    s_vs_p = 0.5
-    amount = 0.004
     out = np.copy(images)
     # Salt mode
     n_salt = np.ceil(amount * images.size * s_vs_p)
@@ -57,10 +56,14 @@ def main():
         training_images, training_labels = shuffle_in_parallel(seed, training_images, training_labels)
         testing_images, testing_labels = shuffle_in_parallel(seed, testing_images, testing_labels)
 
+    training_labels = tf.keras.utils.to_categorical(training_labels, num_classes=10, dtype="float32")
+    testing_labels = tf.keras.utils.to_categorical(testing_labels, num_classes = 10, dtype="float32")
+
     print(f"Training Images: {training_images.shape} - {training_images.dtype}")
     print(f"Testing Images: {testing_images.shape} - {testing_images.dtype}")
     
-    os.makedirs("data/preprocessed")
+    if not os.path.exists("data/preprocessed"):
+        os.makedirs("data/preprocessed")
     np.savez("data/preprocessed/mnist-train.npz", images=training_images, labels=training_labels)
     np.savez("data/preprocessed/mnist-test.npz", images=testing_images, labels=testing_labels)
 

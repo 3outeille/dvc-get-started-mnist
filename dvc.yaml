@@ -33,11 +33,17 @@ stages:
     params:
     - train.seed
     - train.validation_split
-    - train.model
-    - train.optimizer
-    - train.loss
     - train.epochs
     - train.batch_size
+    - model.name
+    - model.optimizer
+    - model.loss
+    - model.mlp.units
+    - model.mlp.activation
+    - model.cnn.dense_units
+    - model.cnn.conv_kernel_size
+    - model.cnn.conv_units
+    - model.cnn.dropout
     outs:
     - models/model.h5
 
