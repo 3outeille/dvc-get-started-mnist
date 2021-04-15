@@ -15,7 +15,7 @@ def cnn(dense_units=128, conv_kernel=(3,3), conv_units=32, dropout=0.5, activati
                                activation=activation,
                                input_shape=(28, 28)),
         tf.keras.layers.Conv2D(conv_units*2,
-                               kernal_size=conv_kernel,
+                               kernel_size=conv_kernel,
                                activation=activation),
         tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
         tf.keras.layers.Dropout(dropout),
