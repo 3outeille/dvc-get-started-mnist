@@ -18,14 +18,20 @@ train:
   batch_size: 128
 
 model:
-  name: "mlp"
+  name: "cnn"
   optimizer: "Adam"
-  loss: "SparseCategoricalCrossentropy"
+  loss: "CategoricalCrossentropy"
   mlp:
-    units: 128
+    units: 16
     activation: "relu"
   cnn:
     dense_units: 128
+    activation: "relu"
     conv_kernel_size: 3
     conv_units: 32
     dropout: 0.5
+  metrics:
+    categorical_accuracy: True
+    recall: True
+    precision: True
+    roc: True

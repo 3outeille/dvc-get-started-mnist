@@ -50,7 +50,7 @@ def main():
 
     if params["normalize"]:
         training_images = normalize(training_images)
-        testing_images = normalize(training_images)
+        testing_images = normalize(testing_images)
 
     if params["shuffle"]:
         training_images, training_labels = shuffle_in_parallel(seed, training_images, training_labels)
