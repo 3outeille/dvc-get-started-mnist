@@ -54,15 +54,24 @@ def get_model():
     metrics_p = model_params["metrics"]
     metrics = []
 
-    if metrics_p["categorical_accuracy"]:
+    if "categorical_accuracy" in metrics_p and metrics_p["categorical_accuracy"]:
         metrics.append(tf.keras.metrics.CategoricalAccuracy())
-    if metrics_p["precision"]:
+    if "precision" in metrics_p and metrics_p["precision"]:
         metrics.append(tf.keras.metrics.Precision())
-    if metrics_p["recall"]:
+    if "recall" in metrics_p and metrics_p["recall"]:
         metrics.append(tf.keras.metrics.Recall())
-    if metrics_p["roc"]:
+    if "roc" in metrics_p and metrics_p["auc-roc"]:
         metrics.append(tf.keras.metrics.AUC(curve="ROC", name="ROC", multi_label=True))
-
+    if "pr" in metrics_p and metrics_p["auc-pr"]:
+        metrics.append(tf.keras.metrics.AUC(curve="PR", name="PR", multi_label=True))
+    if "tp" in metrics_p and metrics_p["tp"]:
+        metrics.append(tf.keras.metrics.TruePositives())
+    if "tn" in metrics_p and metrics_p["tn"]:
+        metrics.append(tf.keras.metrics.TrueNegatives())
+    if "fp" in metrics_p and metrics_p["fp"]:
+        metrics.append(tf.keras.metrics.FalsePositives())
+    if "fn" in metrics_p and metrics_p["fn"]: 
+        metrics.append(tf.keras.metrics.FalseNegatives())
 
     model.compile(
         optimizer=optimizer,

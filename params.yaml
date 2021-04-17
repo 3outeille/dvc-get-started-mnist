@@ -18,7 +18,7 @@ train:
   batch_size: 128
 
 model:
-  name: "cnn"
+  name: "mlp"
   optimizer: "Adam"
   loss: "CategoricalCrossentropy"
   mlp:
@@ -34,4 +34,9 @@ model:
     categorical_accuracy: True
     recall: True
     precision: True
-    roc: True
+    auc-roc: True
+    auc-prc: True
+    fp: True
+    fn: True
+    tp: True
+    tn: False
