@@ -4,9 +4,9 @@ stages:
     cmd: python3 src/prepare.py
     deps:
     - path: data/raw/
-      md5: 051c64d83c64536f0c16f72d278c12a3.dir
-      size: 11594832
-      nfiles: 5
+      md5: b6c29e96813679dd8c451c9b5ca86e2c.dir
+      size: 11594722
+      nfiles: 4
     - path: src/prepare.py
       md5: 21e57d729047c4e7a38871e98d011590
       size: 3834
@@ -28,8 +28,8 @@ stages:
       size: 54951020
       nfiles: 2
     - path: src/preprocess.py
-      md5: 44cdedd76eb9600672a66bb18eceac07
-      size: 2338
+      md5: b50c340172d6ac47b2840ca7a9184d9e
+      size: 2337
     params:
       params.yaml:
         preprocess.add_noise: false
@@ -40,6 +40,50 @@ stages:
         preprocess.shuffle: false
     outs:
     - path: data/preprocessed/
-      md5: 2be3a347d848924b9bf70c7ff91c2317.dir
-      size: 705265020
+      md5: a43a0ef299c2774f881507f3091a3ae6.dir
+      size: 441841020
       nfiles: 2
+  train:
+    cmd: python3 src/train.py
+    deps:
+    - path: data/prepared/
+      md5: 61c41f920b1ecba705776ecbd951aaf8.dir
+      size: 54951020
+      nfiles: 2
+    - path: src/model.py
+      md5: bf6f30f7a467f8d7dfe53caac8339b85
+      size: 2690
+    - path: src/train.py
+      md5: e88e54f872edc9017f398287729ba025
+      size: 1469
+    params:
+      params.yaml:
+        model.cnn.conv_kernel_size: 3
+        model.cnn.conv_units: 32
+        model.cnn.dense_units: 128
+        model.cnn.dropout: 0.5
+        model.loss: CategoricalCrossentropy
+        model.mlp.activation: relu
+        model.mlp.units: 16
+        model.name: cnn
+        model.optimizer: Adam
+        train.batch_size: 128
+        train.epochs: 10
+        train.seed: 20210428
+        train.validation_split: 0.2
+    outs:
+    - path: models/model.h5
+      md5: 4597916b2b96cb13c92bb7ecd707950a
+      size: 8367336
+  evaluate:
+    cmd: python3 src/evaluate.py
+    deps:
+    - path: models/model.h5
+      md5: 4597916b2b96cb13c92bb7ecd707950a
+      size: 8367336
+    - path: src/evaluate.py
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: src/model.py
+      md5: bf6f30f7a467f8d7dfe53caac8339b85
+      size: 2690
