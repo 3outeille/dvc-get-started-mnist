@@ -1,5 +1,12 @@
+md5: 68e04c8f488eadbee73c9b4401a789b5
+frozen: true
+deps:
+- path: get-started-mnist/raw
+  repo:
+    url: https://github.com/iesahin/dataset-registry
+    rev_lock: 089cd95e5a85c2c9c2bc32812c5daa6156728342
 outs:
-- md5: 051c64d83c64536f0c16f72d278c12a3.dir
-  size: 11594832
-  nfiles: 5
+- md5: b6c29e96813679dd8c451c9b5ca86e2c.dir
+  size: 11594722
+  nfiles: 4
   path: raw
