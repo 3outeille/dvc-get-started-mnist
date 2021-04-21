@@ -46,6 +46,9 @@ stages:
     - model.cnn.dropout
     outs:
     - models/model.h5
+    plots:
+      - train.log.csv:
+          cache: false
 
   evaluate:
     cmd: python3 src/evaluate.py
@@ -53,5 +56,8 @@ stages:
     - src/evaluate.py
     - src/model.py
     - models/model.h5
+    metrics:
+      - metrics.json:
+          cache: false
 
 

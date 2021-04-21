@@ -1,0 +1,1 @@
+{"loss": 0.049028683453798294, "categorical_accuracy": 0.9853571653366089, "precision": 0.9866160750389099, "recall": 0.9846428632736206, "true_positives": 13785.0, "false_positives": 187.0, "false_negatives": 215.0}

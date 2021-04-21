@@ -1,13 +1,13 @@
 prepare:
   seed: 20210428
-  remix: True
+  remix: true
   remix_split: 0.20
 
 preprocess:
   seed: 20210428
-  normalize: True
-  shuffle: False
-  add_noise: False
+  normalize: true
+  shuffle: false
+  add_noise: false
   noise_amount: 0.0004
   noise_s_vs_p: 0.5
 
@@ -18,25 +18,25 @@ train:
   batch_size: 128
 
 model:
-  name: "mlp"
-  optimizer: "Adam"
-  loss: "CategoricalCrossentropy"
+  name: cnn
+  optimizer: Adam
+  loss: CategoricalCrossentropy
   mlp:
     units: 16
-    activation: "relu"
+    activation: relu
   cnn:
     dense_units: 128
-    activation: "relu"
+    activation: relu
     conv_kernel_size: 3
     conv_units: 32
     dropout: 0.5
   metrics:
-    categorical_accuracy: True
-    recall: True
-    precision: True
-    auc-roc: True
-    auc-prc: True
-    fp: True
-    fn: True
-    tp: True
-    tn: False
+    categorical_accuracy: true
+    recall: true
+    precision: true
+    auc-roc: true
+    auc-prc: true
+    fp: true
+    fn: true
+    tp: true
+    tn: false

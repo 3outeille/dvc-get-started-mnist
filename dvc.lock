@@ -51,11 +51,11 @@ stages:
       size: 54951020
       nfiles: 2
     - path: src/model.py
-      md5: bf6f30f7a467f8d7dfe53caac8339b85
-      size: 2690
+      md5: cb24a10ab2c18188f11dc21fc78d8bb1
+      size: 3362
     - path: src/train.py
-      md5: e88e54f872edc9017f398287729ba025
-      size: 1469
+      md5: 30c2b5917548d51d8b129e3b4a4f0710
+      size: 1916
     params:
       params.yaml:
         model.cnn.conv_kernel_size: 3
@@ -73,17 +73,17 @@ stages:
         train.validation_split: 0.2
     outs:
     - path: models/model.h5
-      md5: 4597916b2b96cb13c92bb7ecd707950a
-      size: 8367336
+      md5: 24a7d613537c88fd91a5e377881e2a1f
+      size: 8363240
   evaluate:
     cmd: python3 src/evaluate.py
     deps:
     - path: models/model.h5
-      md5: 4597916b2b96cb13c92bb7ecd707950a
-      size: 8367336
+      md5: 24a7d613537c88fd91a5e377881e2a1f
+      size: 8363240
     - path: src/evaluate.py
-      md5: d41d8cd98f00b204e9800998ecf8427e
-      size: 0
+      md5: 7abfb34c007a39e9697400a7f5dd3b7a
+      size: 697
     - path: src/model.py
-      md5: bf6f30f7a467f8d7dfe53caac8339b85
-      size: 2690
+      md5: cb24a10ab2c18188f11dc21fc78d8bb1
+      size: 3362
