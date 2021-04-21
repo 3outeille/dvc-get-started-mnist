@@ -1,4 +1,6 @@
 [core]
-    remote = gs
+    remote = storage
 ['remote "gs"']
     url = gs://dvc-example-data/
+['remote "storage"']
+    url = https://remote.dvc.org/dataset-registry
