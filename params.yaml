@@ -1,6 +1,6 @@
 prepare:
   seed: 20210428
-  remix: true
+  remix: false
   remix_split: 0.20
 
 preprocess:
@@ -18,9 +18,8 @@ train:
   batch_size: 128
 
 model:
-  name: cnn
+  name: mlp
   optimizer: Adam
-  loss: CategoricalCrossentropy
   mlp:
     units: 16
     activation: relu
@@ -36,7 +35,7 @@ model:
     precision: true
     auc-roc: true
     auc-prc: true
-    fp: true
-    fn: true
-    tp: true
+    fp: false
+    fn: false
+    tp: false
     tn: false

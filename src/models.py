@@ -42,14 +42,25 @@ def get_model():
         raise Exception(f"No Model with the name {model_params['name']} is defined")
 
     if model_params["optimizer"].lower() == "adam":
-        optimizer = tf.keras.optimizers.Adam(0.001)
+        optimizer = tf.keras.optimizers.Adam()
+    elif model_params["optimizer"].lower() == "sgd":
+        optimizer = tf.keras.optimizers.SGD()
+    elif model_params["optimizer"].lower() == "rmsprop":
+        optimizer = tf.keras.optimizers.RMSprop()
+    elif model_params["optimizer"].lower() == "adadelta":
+        optimizer = tf.keras.optimizers.Adadelta()
+    elif model_params["optimizer"].lower() == "adagrad":
+        optimizer = tf.keras.optimizers.Adagrad()
+    elif model_params["optimizer"].lower() == "adamax":
+        optimizer = tf.keras.optimizers.Adamax()
+    elif model_params["optimizer"].lower() == "nadam":
+        optimizer = tf.keras.optimizers.Nadam()
+    elif model_params["optimizer"].lower() == "ftrl":
+        optimizer = tf.keras.optimizers.Ftrl()
     else:
         raise Exception(f"No optimizer with the name {model_params['optimizer']} is defined")
 
-    if model_params["loss"].lower() == "categoricalcrossentropy":
-        loss = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
-    else:
-        raise Exception(f"No loss function with the name {model_params['loss']} is defined")
+    loss = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
 
     metrics_p = model_params["metrics"]
     metrics = []
