@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import yaml
 
-import model
+import models
 
 def load_npz_data(filename):
     npzfile = np.load(filename)
