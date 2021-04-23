@@ -37,7 +37,6 @@ stages:
     - train.batch_size
     - model.name
     - model.optimizer
-    - model.loss
     - model.mlp.units
     - model.mlp.activation
     - model.cnn.dense_units
