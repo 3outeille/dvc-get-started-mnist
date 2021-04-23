@@ -1,15 +1,13 @@
 # DVC Example Get Started (MNIST)
 
-This repository contains the new (2021) example get started project. Instead of
-the sklearn based Random Forest classification using a minimized Stack Overflow
-tagging dataset used [in 
-the previous](https://github.com/iterative/example-get-started) one, it employs
+This repository contains the new (2021) example get-started project. It employs
 Tensorflow 2.4 with the standard [MNIST][mnist] dataset. The dataset is
-downloaded not from the TF datasets but from the DVC remote, all preprocessing code
+downloaded not from the TF datasets but from the [DVC Dataset Registry][dsr], all preprocessing code
 is custom to this project and Tensorflow dependency is kept minimal. This project is used as a showcase for the experimentation features
 in DVC 2.0.
 
 [mnist]: http://yann.lecun.com/exdb/mnist/
+[dsr]: https://github.com/iterative/dataset-registry
 
 ## Installation
 
@@ -49,22 +47,29 @@ dvc exp run --set-param model.name=mlp \
 - `prepare.remix`: Determines whether MNIST train (60000 images) and
   test (10000 images) sets are merged and split. If `false`, MNIST test and
   train sets are not merged and used as in the original.
+
 - `prepare.remix_split`: Determines the split ratio between training and testing
   sets if `remix` is `true`. For `0.20`, a total of 70000 images are randomly
   split into 56000 training and 14000 test sets.
+
 - `prepare.seed`: The RNG seed used in shuffling after the remix.
 
 ### Parameters for the `preprocess` stage
 
 - `preprocess.seed`: The RNG seed used in shuffling. 
+
 - `preprocess.normalize`: If `true`, normalizes the pixel values (0-255) dividing by 255.
   Although this is a standard and required procedure, you may want to observe
   the effects by turning it off.
+
 - `preprocess.shuffle`: If `true`, shuffles the training and test sets. 
+
 - `preprocess.add_noise`: If `true` adds salt-and-pepper noise by setting some pixels to
   white and some pixels to black. This may be used to reduce overfitting.
+  
 - `preprocess.noise_amount`: Sets the amount of S&P noise added to the images if
   `add_noise` is `true`.
+  
 - `preprocess.noise_s_vs_p`: Sets the ratio of white and black noise in images if
   `add_noise` is `true`.
 
@@ -72,7 +77,9 @@ dvc exp run --set-param model.name=mlp \
 
 - `train.validation_split`: The split ratio for the validation set, reserved from the
   training set. If this value is `0`, the test set is used for validation. 
+
 - `train.epochs`: Number of epochs to train the network. 
+
 - `train.batch_size`: Batch size for the `model.fit` method. 
 
 ### Parameters for the `model`
@@ -86,7 +93,7 @@ performance, like `units` for the MLP or `conv_units` for the CNN.
   and a single `Dense` layer is used. The parameters for these networks are defined in separate sections below.
   
 - `model.optimizer`: Can be one of `Adam`, `SGD`, `RMSprop`, `Adadelta`, `Adagrad`, `Adamax`, `Nadam`, `Ftrl`.
-    
+
 - `model.mlp.units`: Number of `Dense` units in MLP.
 
 - `model.mlp.activation`: Activation function for the `Dense` layer. Can be one of `relu`, `selu`, `elu`, `tanh`
@@ -94,7 +101,7 @@ performance, like `units` for the MLP or `conv_units` for the CNN.
 - `model.cnn.dense_units`: Number of units in `Dense` layer of the CNN.
 
 - `model.cnn.activation`: The activation function for the convolutional layer.
-  Can be one of `relu`, `selu`, `elu` or `tanh`. 
+  Can be one of `relu`, `selu`, `elu` or `tanh`.
 
 - `model.cnn.conv_kernel_size`: One side of convolutional kernel, e.g., for `3`, a `(3, 3)` convolution applied to the images.
 
@@ -136,11 +143,13 @@ The data files used in the project are found in `data/`. All of these files are
 tracked by DVC and can be retrieved using `dvc pull` from the configured remote.
 
 - `data/raw.dvc`: Contains a reference to the [Dataset
-  Registry](https://github.com/iterative/dataset-registry) to download the MNIST
+  Registry][dsr] to download the MNIST
   dataset to `data/raw/`.
-- `data/prepared/`: Created by `src/prepare.py` and contains training and testing files in NumPy format. 
+
+- `data/prepared/`: Created by `src/prepare.py` and contains training and testing files in NumPy format.
+
 - `data/preprocessed/`: Created by `src/preprocess.py` and contains training and
-  testing files in NumPy format ready to be supplied to Tensorflow.
+  testing files in NumPy format ready to be supplied to `model.train`.
 
 ### Source Files
 
@@ -149,8 +158,8 @@ The source files are `src/` directory. All files receive runtime parameters from
 hardcoded in the current version, but this may change in a later iteration.
 Almost all capabilities of these scripts can be modified with the options in `params.yaml`
 
-- `src/prepare.py`: Reads the raw dataset files in `data/raw/` and converts to
-  NumPy format. As the MNIST dataset contains train and test sets, this script
+- `src/prepare.py`: Reads the raw dataset files from `data/raw/` in _IDX3_ format and converts to
+  NumPy format. As the MNIST dataset already contains train and test sets, this script
   can remix and split them if needed. The output files are stored in
   `data/prepared/`.
   
@@ -162,9 +171,10 @@ Almost all capabilities of these scripts can be modified with the options in `pa
   hidden layer.  The second is a deeper network with a convolution layer, max
   pooling, dropout, and a hidden dense layer. Various parameters of these
   networks can be set in `params.yaml`. The metrics produced as the output are
-  also compiled into models in this file. The metrics can be turned on-and-off in the parameters. 
+  also compiled into models in this file. The metrics can be turned on-and-off
+  in `params.yaml` as described above.
 
-- `src/train.py`: Trains the neural network supplied by `src/models.py` with the
+- `src/train.py`: Trains the specific neural network returned by `src/models.py` with the
   data in `data/preprocessed/`. It produces 
   `train.log.csv` plots file during the training that contains various metrics
   for each epoch, and `models/model.h5` file at the end. 
@@ -187,6 +197,7 @@ Following two files are tracked by DVC as plots and metrics files, respectively.
 
 - `train.log.csv`: Training and validation metrics in each epoch produced in
   `src/train.py` is written to this file.
+
 - `metrics.json`: Final metrics produced by the test set is output to this file.
   
 
@@ -196,7 +207,7 @@ The repository is a standard Git repository and contains the usual `.dvc` files:
 
 - `.dvc/config`: Contains a remote configuration to retrieve dataset from S3.
 - `dvc.yaml`: Contains the pipeline configuration.
-- `dvc.lock`: Parameters and dependency state is tracked with this file.
+- `dvc.lock`: Parameters and dependency hashes are tracked with this file.
 
 ## The Pipeline
 
