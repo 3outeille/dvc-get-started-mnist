@@ -3,18 +3,39 @@
 This repository contains the new (2021) example get started project. Instead of
 the sklearn based Random Forest classification using a minimized Stack Overflow
 tagging dataset used [in 
-the previous](https://github.com/iterative/example-get-started) one, it uses
-Tensorflow 2.4 with the standard [MNIST] dataset. This project is planned to be
-used to show the experimentation features in DVC 2.0.
+the previous](https://github.com/iterative/example-get-started) one, it employs
+Tensorflow 2.4 with the standard [MNIST][mnist] dataset. The dataset is
+downloaded not from the TF datasets but from the DVC remote, all preprocessing code
+is custom to this project and Tensorflow dependency is kept minimal. This project is used as a showcase for the experimentation features
+in DVC 2.0.
+
+[mnist]: http://yann.lecun.com/exdb/mnist/
 
 ## Installation
 
+After cloning the project, you can create a virtual environment and activate it:
 
+```console
+python3 -m venv .env 
+source .env/bin/activate
+```
+
+Install the requirements.
+
+```console
+pip3 install -r requirements.txt
+```
+
+Run the pipeline:
+
+```console
+dvc exp run
+```
 
 ## Parameters
 
 This project is aimed towards experimentation and thus contains many parameters
-to modify. All of these are set in `params.yaml` and can be modified during
+to change and play. All of these are set in `params.yaml` and can be modified during
 experiments as:
 
 ```console
@@ -25,34 +46,34 @@ dvc exp run --set-param model.name=mlp \
 
 ### Parameters for the `prepare` stage
 
-- `remix`: Determines whether MNIST train (60000 images) and
+- `prepare.remix`: Determines whether MNIST train (60000 images) and
   test (10000 images) sets are merged and split. If `false`, MNIST test and
   train sets are not merged and used as in the original.
-- `remix_split`: Determines the split ratio between training and testing
+- `prepare.remix_split`: Determines the split ratio between training and testing
   sets if `remix` is `true`. For `0.20`, a total of 70000 images are randomly
   split into 56000 training and 14000 test sets.
-- `seed`: The RNG seed used in shuffling after the remix.
+- `prepare.seed`: The RNG seed used in shuffling after the remix.
 
 ### Parameters for the `preprocess` stage
 
-- `seed`: The RNG seed used in shuffling. 
-- `normalize`: If `true`, normalizes the pixel values (0-255) dividing by 255.
+- `preprocess.seed`: The RNG seed used in shuffling. 
+- `preprocess.normalize`: If `true`, normalizes the pixel values (0-255) dividing by 255.
   Although this is a standard and required procedure, you may want to observe
   the effects by turning it off.
-- `shuffle`: If `true`, shuffles the training and test sets. 
-- `add_noise`: If `true` adds salt-and-pepper noise by setting some pixels to
+- `preprocess.shuffle`: If `true`, shuffles the training and test sets. 
+- `preprocess.add_noise`: If `true` adds salt-and-pepper noise by setting some pixels to
   white and some pixels to black. This may be used to reduce overfitting.
-- `noise_amount`: Sets the amount of S&P noise added to the images if
+- `preprocess.noise_amount`: Sets the amount of S&P noise added to the images if
   `add_noise` is `true`.
-- `noise_s_vs_p`: Sets the ratio of white and black noise in images if
+- `preprocess.noise_s_vs_p`: Sets the ratio of white and black noise in images if
   `add_noise` is `true`.
 
 ### Parameters for the `train` stage
 
-- `validation_split`: The split ratio for the validation set, reserved from the
+- `train.validation_split`: The split ratio for the validation set, reserved from the
   training set. If this value is `0`, the test set is used for validation. 
-- `epochs`: Number of epochs to train the network. 
-- `batch_size`: Batch size for the `model.fit` method. 
+- `train.epochs`: Number of epochs to train the network. 
+- `train.batch_size`: Batch size for the `model.fit` method. 
 
 ### Parameters for the `model`
 
@@ -60,31 +81,52 @@ These parameters are used to set the attributes of the models. Although their
 structure is fixed, you can set some important parameters that will affect the
 performance, like `units` for the MLP or `conv_units` for the CNN.
 
-- `name`: Used to select the model. For `mlp` a simple NN with a single hidden
-  layer is used. For `cnn`, a Convolutional Net with a single single `Conv2D`
-  and a single `Dense` layer is used. The parameters for these networks are
-  defined in separate sections below.
-- `optimizer`: Adam
-  loss: CategoricalCrossentropy
-  mlp:
-    units: 16
-    activation: relu
-  cnn:
-    dense_units: 128
-    activation: relu
-    conv_kernel_size: 3
-    conv_units: 32
-    dropout: 0.5
-  metrics:
-    categorical_accuracy: true
-    recall: true
-    precision: true
-    auc-roc: true
-    auc-prc: true
-    fp: false
-    fn: false
-    tp: false
-    tn: false
+- `model.name`: Used to select the model. For `mlp` a simple NN with a single
+  hidden layer is used. For `cnn`, a Convolutional Net with a single `Conv2D`
+  and a single `Dense` layer is used. The parameters for these networks are defined in separate sections below.
+  
+- `model.optimizer`: Can be one of `Adam`, `SGD`, `RMSprop`, `Adadelta`, `Adagrad`, `Adamax`, `Nadam`, `Ftrl`.
+    
+- `model.mlp.units`: Number of `Dense` units in MLP.
+
+- `model.mlp.activation`: Activation function for the `Dense` layer. Can be one of `relu`, `selu`, `elu`, `tanh`
+
+- `model.cnn.dense_units`: Number of units in `Dense` layer of the CNN.
+
+- `model.cnn.activation`: The activation function for the convolutional layer.
+  Can be one of `relu`, `selu`, `elu` or `tanh`. 
+
+- `model.cnn.conv_kernel_size`: One side of convolutional kernel, e.g., for `3`, a `(3, 3)` convolution applied to the images.
+
+- `model.cnn.conv_units`: Number of convolutional units. 
+
+- `model.cnn.dropout`: Dropout rate between `0` and `1`. Usually set to `0.5`.
+
+### Selecting metrics to report
+
+These parameters are used to select the appropriate metrics to generate during
+training and evaluation. These also affect the columns/fields of `train.log.csv`
+and `metrics.json` files.
+
+- `model.metrics.categorical_accuracy`: Produces accuracy metrics for the classes.
+
+- `model.metrics.recall`: Recall metric (True Positives / All Relevant Elements)
+
+- `model.metrics.precision`: Precision metric (True Positives / All Positives)
+
+- `model.metrics.auc-roc`: Generates [Receiver Operating
+  Characteristic](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
+  curve
+
+- `model.metrics.auc-prc`: Generates Precision-Recall Curve
+
+- `model.metrics.fp`: Number of False Positives
+
+- `model.metrics.fn`: Number of False Negatives
+
+- `model.metrics.tp`: Number of True Positives
+
+- `model.metrics.tn`: Number of True Negatives
 
 ## Files
 
@@ -156,7 +198,7 @@ The repository is a standard Git repository and contains the usual `.dvc` files:
 - `dvc.yaml`: Contains the pipeline configuration.
 - `dvc.lock`: Parameters and dependency state is tracked with this file.
 
-# The Pipeline
+## The Pipeline
 
 The pipeline graph retrieved by `dvc dag` is as shown below:
 
