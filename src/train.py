@@ -23,7 +23,7 @@ def history_to_csv(history):
 
 def main():
     params = load_params()
-    m = model.get_model()
+    m = models.get_model()
     m.summary()
 
     whole_train_img, whole_train_labels = load_npz_data("data/preprocessed/mnist-train.npz")
